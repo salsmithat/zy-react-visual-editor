@@ -1,0 +1,105 @@
+/* @headSize: 60px; // 编辑器头部的高度
+@menuSize: 275px; // 编辑器菜单高度
+@operatorSize: 275px; // 右侧操作栏宽度
+
+@ibc: #dcdfe6; // 边框色
+@ibl: #ebeef5; // 边框色（轻）
+@itc: #314659; // 字体颜色
+@icc:rgba (0,0,0,0.45); // 图标颜色
+@boxShadowColor: #f0f1f2; // 阴影颜色
+@primary: #409eff ;// 基础色 */
+
+.react-visual-editor {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  bottom: 20px;
+  right: 20px;
+  background: white;
+}
+.react-visual-editor:before {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  content: "";
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.react-visual-editor-menu,
+.react-visual-editor-head,
+.react-visual-editor-operator,
+.react-visual-editor-body {
+  position: absolute;
+}
+.react-visual-editor-menu {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 275px;
+  background-color: white;
+  padding: 20px;
+  box-sizing: border-box;
+  border-right: 1px solid #dcdfe6;
+}
+.react-visual-editor-head {
+  top: 0;
+  left: 275px;
+  right: 275px;
+  height: 60px;
+  z-index: 100;
+}
+.react-visual-editor-operator {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 275px;
+  background-color: white;
+  border-left: 1px solid #dcdfe6;
+}
+.react-visual-editor-body {
+  top: 0;
+  left: 275px;
+  right: 275px;
+  box-sizing: border-box;
+  padding-top: 60px;
+  padding-bottom: 300px;
+  bottom: 0;
+  background-color: #f6f6f6;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+}
+.react-visual-editor-menu-item {
+  border: solid 2px #dcdfe6;
+  margin-bottom: 20px;
+  position: relative;
+  padding: 40px 16px 20px;
+  text-align: center;
+}
+.react-visual-editor-menu-item:after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  content: "";
+}
+.react-visual-editor-menu-item:hover {
+  border-color: #409eff;
+}
+.react-visual-editor-menu-item-name {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #409eff;
+  color: white;
+  top: -2px;
+  left: -2px;
+  font-size: 12px;
+  line-height: 2em;
+  padding: 0 20px;
+}
+.react-visual-editor-container {
+  background-color: white;
+}
