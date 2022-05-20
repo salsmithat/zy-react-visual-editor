@@ -102,4 +102,5 @@
 }
 .react-visual-editor-container {
   background-color: white;
+  position: relative;
 }

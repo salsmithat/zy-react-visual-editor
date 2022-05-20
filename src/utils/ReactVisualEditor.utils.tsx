@@ -2,6 +2,7 @@ export interface ReactVisualEditorBlock {
   top: number;
   left: number;
   componentKey: string;
+  adjustPosition: boolean;
 }
 
 export interface ReactVisualEditorValue {
@@ -47,3 +48,20 @@ export function createVisualConfig() {
   };
 }
 export type ReactVisualEditorConfig = ReturnType<typeof createVisualConfig>;
+
+export function createVisualBlock({
+  top,
+  left,
+  component,
+}: {
+  top: number;
+  left: number;
+  component: ReactVisualEditorComponent;
+}): ReactVisualEditorBlock {
+  return {
+    componentKey: component.key,
+    top,
+    left,
+    adjustPosition: true,
+  };
+}
