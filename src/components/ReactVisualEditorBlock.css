@@ -1,5 +1,6 @@
 .react-visual-editor-block {
   position: absolute;
+  user-select: none;
 }
 .react-visual-editor-block:after {
   content: "";
@@ -8,4 +9,13 @@
   bottom: 0;
   right: 0;
   position: absolute;
+}
+.react-visual-editor-block-focus::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  bottom: -4px;
+  right: -4px;
+  border: dashed 1px #409eff;
 }
