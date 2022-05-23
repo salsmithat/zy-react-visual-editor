@@ -48,6 +48,9 @@
   right: 275px;
   height: 60px;
   z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .react-visual-editor-operator {
   top: 0;
@@ -103,4 +106,35 @@
 .react-visual-editor-container {
   background-color: white;
   position: relative;
+}
+.react-visual-editor-head-btn {
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
+  padding: 3px 12px;
+  align-items: center;
+  position: relative;
+  transition: background-color linear 0.1s;
+  cursor: pointer;
+  user-select: none;
+}
+.react-visual-editor-head-btn span {
+  font-size: 12px;
+}
+.react-visual-editor-head-btn:not(:last-child)::after {
+  position: absolute;
+  right: -0.5px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  content: "";
+  background: rgba(255, 255, 255, 0.5);
+}
+.react-visual-editor-head-btn:hover {
+  color: #409eff;
+  background-color: white;
+}
+.react-visual-editor-head-btn:active {
+  background-color: #ddf8ff;
 }

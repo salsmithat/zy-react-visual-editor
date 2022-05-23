@@ -6,15 +6,19 @@ import {
   ReactVisualEditorValue,
 } from "../utils/ReactVisualEditor.utils";
 import "./ReactVisualEditor.css";
-import React, { useMemo, useRef } from "react";
+import "./iconfont.css";
+import React, { useMemo, useRef, useState } from "react";
 import { ReactVisualBlock } from "./ReactVisualEditorBlock";
 import { useCallbackRef } from "../hooks/useCallbackRef";
+import { useVisualCommand } from "./ReactVisualEditorCommand";
 
 export const ReactVisualEditor: React.FC<{
   value: ReactVisualEditorValue;
   onChange: (val: ReactVisualEditorValue) => void;
   config: ReactVisualEditorConfig;
 }> = (props) => {
+  const [preview, setPreview] = useState(false);
+  const [editing, setEditing] = useState(false);
   const containerRef = useRef(null as HTMLDivElement | null);
   const updateBlocks = (blocks: ReactVisualEditorBlock[]) => {
     props.onChange({
@@ -192,6 +196,54 @@ export const ReactVisualEditor: React.FC<{
     innermousemove,
     innermouseup,
   };
+  const commander = useVisualCommand({
+    value: props.value,
+    focusData,
+    updateBlocks,
+  });
+  const buttons: {
+    label: string | (() => string);
+    icon: string | (() => string);
+    tip?: string | (() => string);
+    handler: () => void;
+  }[] = [
+    { label: "撤销", icon: "icon-back", handler: () => {}, tip: "ctrl+z" },
+    {
+      label: "重做",
+      icon: "icon-forward",
+      handler: () => {},
+      tip: "ctrl+y,ctrl+shift+z",
+    },
+    {
+      label: () => (preview ? "编辑" : "预览"),
+      icon: () => (preview ? "icon-edit" : "icon-browse"),
+      handler: () => {},
+    },
+    { label: "导入", icon: "icon-Import", handler: () => {} },
+    { label: "导出", icon: "icon-export", handler: () => {} },
+    {
+      label: "置顶",
+      icon: "icon-top",
+      handler: () => {},
+      tip: "ctrl+up",
+    },
+    {
+      label: "置底",
+      icon: "icon-bottom",
+      handler: () => {},
+      tip: "ctrl+down",
+    },
+    {
+      label: "删除",
+      icon: "icon-delete",
+      handler: () => {
+        commander.delete();
+      },
+      tip: "ctrl+d,backspace,delete",
+    },
+    { label: "清空", icon: "icon-reset", handler: () => {} },
+    { label: "关闭", icon: "icon-close", handler: () => {} },
+  ];
   return (
     <div className="react-visual-editor">
       <div className="react-visual-editor-menu">
@@ -212,7 +264,22 @@ export const ReactVisualEditor: React.FC<{
           );
         })}
       </div>
-      <div className="react-visual-editor-head">head</div>
+      <div className="react-visual-editor-head">
+        {buttons.map((btn, index) => {
+          const label =
+            typeof btn.label === "function" ? btn.label() : btn.label;
+          const icon = typeof btn.icon === "function" ? btn.icon() : btn.icon;
+          return (
+            <div
+              className="react-visual-editor-head-btn"
+              onClick={() => btn.handler()}
+            >
+              <i className={`iconfont ${icon}`} />
+              <span>{label}</span>
+            </div>
+          );
+        })}
+      </div>
       <div className="react-visual-editor-operator">operator</div>
       <div className="react-visual-editor-body">
         <div
