@@ -7,7 +7,7 @@ export interface CommandExecute {
 
 interface Command {
   name: string;
-  keyboard: string | string[];
+  keyboard?: string | string[];
   execute: (...args: any[]) => CommandExecute;
   init?: () => () => void | undefined;
   followQueue?: boolean;
@@ -60,7 +60,14 @@ export function useCommander() {
       if (ctrlKey || metaKey) keyString.push("ctrl");
       if (shiftKey) keyString.push("shift");
       if (altKey) keyString.push("alt");
-      keyString.push(String(KeyboardCode[keyCode]));
+      if (
+        String(KeyboardCode[keyCode]).toLowerCase() !== "ctrl" &&
+        String(KeyboardCode[keyCode]).toLowerCase() !== "shift" &&
+        String(KeyboardCode[keyCode]).toLowerCase() !== "alt" &&
+        String(KeyboardCode[keyCode]).toLowerCase() !== "control"
+      ) {
+        keyString.push(String(KeyboardCode[keyCode]).toLowerCase());
+      }
       const keyNames = keyString.join("+");
       state.commandArray.forEach(({ current: { keyboard, name } }) => {
         if (!keyboard) {
@@ -118,9 +125,6 @@ export function useCommander() {
       execute: () => {
         return {
           redo: () => {
-            if (state.current === -1) {
-              return;
-            }
             const queueItem = state.queue[state.current + 1];
             if (!!queueItem) {
               queueItem.redo();
@@ -130,6 +134,7 @@ export function useCommander() {
         };
       },
     });
+
     //eslint-disable-next-line
     useEffect(() => {
       return () => {

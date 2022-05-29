@@ -11,6 +11,7 @@ import React, { useMemo, useRef, useState } from "react";
 import { ReactVisualBlock } from "./ReactVisualEditorBlock";
 import { useCallbackRef } from "../hooks/useCallbackRef";
 import { useVisualCommand } from "./ReactVisualEditorCommand";
+import { createEvent } from "../plugins/event";
 
 export const ReactVisualEditor: React.FC<{
   value: ReactVisualEditorValue;
@@ -19,6 +20,8 @@ export const ReactVisualEditor: React.FC<{
 }> = (props) => {
   const [preview, setPreview] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [dragstart] = useState(() => createEvent());
+  const [dragend] = useState(() => createEvent());
   const containerRef = useRef(null as HTMLDivElement | null);
   const updateBlocks = (blocks: ReactVisualEditorBlock[]) => {
     props.onChange({
@@ -74,6 +77,7 @@ export const ReactVisualEditor: React.FC<{
           );
           containerRef.current.addEventListener("drop", container.drop);
           dragData.current.dragComponent = dragComponent;
+          dragstart.emit();
         }
       }
     ),
@@ -110,16 +114,16 @@ export const ReactVisualEditor: React.FC<{
       }
     }),
     drop: useCallbackRef((e: DragEvent) => {
-      props.onChange({
-        ...props.value,
-        blocks: [
-          ...props.value.blocks,
-          createVisualBlock({
-            top: e.offsetY,
-            left: e.offsetX,
-            component: dragData.current.dragComponent!,
-          }),
-        ],
+      updateBlocks([
+        ...props.value.blocks,
+        createVisualBlock({
+          top: e.offsetY,
+          left: e.offsetX,
+          component: dragData.current.dragComponent!,
+        }),
+      ]);
+      setTimeout(() => {
+        dragend.emit();
       });
     }),
   };
@@ -159,6 +163,7 @@ export const ReactVisualEditor: React.FC<{
       top: number;
       left: number;
     }[],
+    dragging: false,
   });
   const innermousedown = useCallbackRef(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -171,6 +176,7 @@ export const ReactVisualEditor: React.FC<{
           top,
           left,
         })),
+        dragging: false,
       };
     }
   );
@@ -185,10 +191,17 @@ export const ReactVisualEditor: React.FC<{
       block.left = left + durX;
     });
     updateBlocks(props.value.blocks);
+    if (!innerDragDate.current.dragging) {
+      innerDragDate.current.dragging = true;
+      dragstart.emit();
+    }
   });
   const innermouseup = useCallbackRef((e: MouseEvent) => {
     document.removeEventListener("mousemove", innermousemove);
     document.removeEventListener("mouseup", innermouseup);
+    if (innerDragDate.current.dragging) {
+      dragend.emit();
+    }
   });
 
   const blockDragger = {
@@ -200,6 +213,8 @@ export const ReactVisualEditor: React.FC<{
     value: props.value,
     focusData,
     updateBlocks,
+    dragstart,
+    dragend,
   });
   const buttons: {
     label: string | (() => string);
@@ -207,11 +222,20 @@ export const ReactVisualEditor: React.FC<{
     tip?: string | (() => string);
     handler: () => void;
   }[] = [
-    { label: "撤销", icon: "icon-back", handler: () => {}, tip: "ctrl+z" },
+    {
+      label: "撤销",
+      icon: "icon-back",
+      handler: () => {
+        commander.undo();
+      },
+      tip: "ctrl+z",
+    },
     {
       label: "重做",
       icon: "icon-forward",
-      handler: () => {},
+      handler: () => {
+        commander.redo();
+      },
       tip: "ctrl+y,ctrl+shift+z",
     },
     {
@@ -271,6 +295,7 @@ export const ReactVisualEditor: React.FC<{
           const icon = typeof btn.icon === "function" ? btn.icon() : btn.icon;
           return (
             <div
+              key={typeof btn.label === "function" ? btn.label() : btn.label}
               className="react-visual-editor-head-btn"
               onClick={() => btn.handler()}
             >
