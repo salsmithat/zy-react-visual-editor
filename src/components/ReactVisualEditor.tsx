@@ -12,6 +12,7 @@ import { ReactVisualBlock } from "./ReactVisualEditorBlock";
 import { useCallbackRef } from "../hooks/useCallbackRef";
 import { useVisualCommand } from "./ReactVisualEditorCommand";
 import { createEvent } from "../plugins/event";
+import classNames from "classnames";
 
 export const ReactVisualEditor: React.FC<{
   value: ReactVisualEditorValue;
@@ -56,6 +57,14 @@ export const ReactVisualEditor: React.FC<{
       width: `${props.value.container.width}px`,
     };
   }, [props.value.container.height, props.value.container.width]);
+  const classes = useMemo(() => {
+    return classNames([
+      "react-visual-editor",
+      {
+        "react-visual-editor-preview": preview,
+      },
+    ]);
+  }, [preview]);
   const dragData = useRef({
     dragComponent: null as null | ReactVisualEditorComponent,
   });
@@ -131,6 +140,9 @@ export const ReactVisualEditor: React.FC<{
     e: React.MouseEvent<HTMLDivElement>,
     block: ReactVisualEditorBlock
   ) => {
+    if (preview) {
+      return;
+    }
     if (e.shiftKey) {
       if (focusData.focus.length <= 1) {
         block.focus = true;
@@ -241,7 +253,9 @@ export const ReactVisualEditor: React.FC<{
     {
       label: () => (preview ? "编辑" : "预览"),
       icon: () => (preview ? "icon-edit" : "icon-browse"),
-      handler: () => {},
+      handler: () => {
+        setPreview(!preview);
+      },
     },
     { label: "导入", icon: "icon-Import", handler: () => {} },
     { label: "导出", icon: "icon-export", handler: () => {} },
@@ -279,7 +293,7 @@ export const ReactVisualEditor: React.FC<{
     { label: "关闭", icon: "icon-close", handler: () => {} },
   ];
   return (
-    <div className="react-visual-editor">
+    <div className={classes}>
       <div className="react-visual-editor-menu">
         {props.config.componentArray.map((component) => {
           return (

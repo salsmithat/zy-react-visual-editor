@@ -107,6 +107,16 @@
   background-color: white;
   position: relative;
 }
+.react-visual-editor-container::before {
+  position: absolute;
+  content: "";
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  border: 1px dashed #409eff;
+  pointer-events: none;
+}
 .react-visual-editor-head-btn {
   display: flex;
   flex-direction: column;
@@ -137,4 +147,21 @@
 }
 .react-visual-editor-head-btn:active {
   background-color: #ddf8ff;
+}
+.react-visual-editor-preview
+  .react-visual-editor-body
+  .react-visual-editor-container
+  .react-visual-editor-block::after {
+  display: none;
+}
+.react-visual-editor-preview
+  .react-visual-editor-body
+  .react-visual-editor-container
+  .react-visual-editor-block {
+  user-select: auto;
+}
+.react-visual-editor-preview
+  .react-visual-editor-body
+  .react-visual-editor-container::before {
+  display: none;
 }
