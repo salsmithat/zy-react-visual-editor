@@ -269,7 +269,13 @@ export const ReactVisualEditor: React.FC<{
       },
       tip: "ctrl+d,backspace,delete",
     },
-    { label: "清空", icon: "icon-reset", handler: () => {} },
+    {
+      label: "清空",
+      icon: "icon-reset",
+      handler: () => {
+        commander.clear();
+      },
+    },
     { label: "关闭", icon: "icon-close", handler: () => {} },
   ];
   return (

@@ -159,6 +159,21 @@ export function useVisualCommand({
       };
     },
   });
+  commander.useRegistry({
+    name: "clear",
+    execute: () => {
+      const before = deepcopy(value.blocks);
+      const after = deepcopy([]);
+      return {
+        redo: () => {
+          updateBlocks(after);
+        },
+        undo: () => {
+          updateBlocks(before);
+        },
+      };
+    },
+  });
   commander.useInit();
   return {
     delete: () => {
@@ -175,6 +190,9 @@ export function useVisualCommand({
     },
     placeBottom: () => {
       commander.state.commands.placeBottom();
+    },
+    clear: () => {
+      commander.state.commands.clear();
     },
   };
 }
