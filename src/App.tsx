@@ -1,5 +1,4 @@
-import React, { useState, useRef } from "react";
-import { useCallbackRef } from "./hooks/useCallbackRef";
+import React, { useState } from "react";
 import { ReactVisualEditor } from "./components/ReactVisualEditor";
 import { visualConfig } from "./utils/visualConfig";
 import { ReactVisualEditorValue } from "./utils/ReactVisualEditor.utils";
@@ -54,6 +53,7 @@ function App() {
           left: 100,
           adjustPosition: false,
           focus: false,
+          zIndex: 0,
         },
         {
           componentKey: "button",
@@ -61,6 +61,7 @@ function App() {
           left: 200,
           adjustPosition: false,
           focus: false,
+          zIndex: 0,
         },
         {
           componentKey: "input",
@@ -68,6 +69,7 @@ function App() {
           left: 300,
           adjustPosition: false,
           focus: false,
+          zIndex: 0,
         },
       ],
     };

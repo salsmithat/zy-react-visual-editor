@@ -73,6 +73,92 @@ export function useVisualCommand({
       };
     },
   });
+  commander.useRegistry({
+    name: "selectAll",
+    keyboard: "ctrl+a",
+    followQueue: false,
+    execute: () => {
+      return {
+        redo: () => {
+          value.blocks.forEach((block) => {
+            block.focus = true;
+          });
+          updateBlocks(value.blocks);
+        },
+      };
+    },
+  });
+  commander.useRegistry({
+    name: "placeTop",
+    keyboard: "ctrl+up",
+    execute: () => {
+      const before = deepcopy(value.blocks);
+      const after = deepcopy(
+        (() => {
+          const { focus, unfocus } = focusData;
+          const maxUnFocusIndex = unfocus.reduce((prev, item) => {
+            return Math.max(prev, item.zIndex);
+          }, -Infinity);
+          const minFocusIndex = focus.reduce((prev, item) => {
+            return Math.min(prev, item.zIndex);
+          }, Infinity);
+          let dur = maxUnFocusIndex - minFocusIndex;
+          if (dur >= 0) {
+            dur++;
+            focus.forEach((block) => (block.zIndex += dur));
+          }
+          return value.blocks;
+        })()
+      );
+      return {
+        redo: () => {
+          updateBlocks(after);
+        },
+        undo: () => {
+          updateBlocks(before);
+        },
+      };
+    },
+  });
+  commander.useRegistry({
+    name: "placeBottom",
+    keyboard: "ctrl+down",
+    execute: () => {
+      const before = deepcopy(value.blocks);
+      const after = deepcopy(
+        (() => {
+          const { focus, unfocus } = focusData;
+          const minUnFocusIndex = unfocus.reduce((prev, item) => {
+            return Math.min(prev, item.zIndex);
+          }, Infinity);
+          const maxFocusIndex = focus.reduce((prev, item) => {
+            return Math.max(prev, item.zIndex);
+          }, -Infinity);
+          const minFocusIndex = focus.reduce((prev, item) => {
+            return Math.min(prev, item.zIndex);
+          }, Infinity);
+          let dur = maxFocusIndex - minUnFocusIndex;
+          if (dur >= 0) {
+            dur++;
+            focus.forEach((block) => (block.zIndex -= dur));
+            if (minFocusIndex - dur < 0) {
+              dur = dur - minFocusIndex;
+              value.blocks.forEach((block) => (block.zIndex += dur));
+            }
+          }
+          return value.blocks;
+        })()
+      );
+      return {
+        redo: () => {
+          updateBlocks(after);
+        },
+        undo: () => {
+          updateBlocks(before);
+        },
+      };
+    },
+  });
   commander.useInit();
   return {
     delete: () => {
@@ -83,6 +169,12 @@ export function useVisualCommand({
     },
     redo: () => {
       commander.state.commands.redo();
+    },
+    placeTop: () => {
+      commander.state.commands.placeTop();
+    },
+    placeBottom: () => {
+      commander.state.commands.placeBottom();
     },
   };
 }

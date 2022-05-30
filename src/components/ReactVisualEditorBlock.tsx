@@ -17,9 +17,15 @@ export const ReactVisualBlock: React.FC<{
     return {
       top: `${props.block.top}px`,
       left: `${props.block.left}px`,
+      zIndex: `${props.block.zIndex}`,
       opacity: `${props.block.adjustPosition ? "0" : ""}`,
     };
-  }, [props.block.top, props.block.left, props.block.adjustPosition]);
+  }, [
+    props.block.top,
+    props.block.left,
+    props.block.adjustPosition,
+    props.block.zIndex,
+  ]);
   const classes = useMemo(
     () =>
       classNames([

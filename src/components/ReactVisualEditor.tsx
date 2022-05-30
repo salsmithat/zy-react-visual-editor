@@ -248,13 +248,17 @@ export const ReactVisualEditor: React.FC<{
     {
       label: "置顶",
       icon: "icon-top",
-      handler: () => {},
+      handler: () => {
+        commander.placeTop();
+      },
       tip: "ctrl+up",
     },
     {
       label: "置底",
       icon: "icon-bottom",
-      handler: () => {},
+      handler: () => {
+        commander.placeBottom();
+      },
       tip: "ctrl+down",
     },
     {
