@@ -107,6 +107,8 @@ export const $$dialog = {
       editValue,
       ...(opt || {}),
       editType: "textarea",
+      confirmButton: !opt || !opt.editReadonly,
+      cancelButton: !opt || !opt.editReadonly,
       onConfirm: (editValue) => {
         dfd.resolve(editValue);
       },

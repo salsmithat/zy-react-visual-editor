@@ -14,6 +14,7 @@ import { useVisualCommand } from "./ReactVisualEditorCommand";
 import { createEvent } from "../plugins/event";
 import classNames from "classnames";
 import { $$dialog } from "../service/dialog/dialog";
+import { notification } from "antd";
 
 export const ReactVisualEditor: React.FC<{
   value: ReactVisualEditorValue;
@@ -31,7 +32,9 @@ export const ReactVisualEditor: React.FC<{
       blocks: [...blocks],
     });
   };
-
+  const updateValue = (value: ReactVisualEditorValue) => {
+    props.onChange({ ...value });
+  };
   const focusData = useMemo(() => {
     const focus: ReactVisualEditorBlock[] = [];
     const unfocus: ReactVisualEditorBlock[] = [];
@@ -228,6 +231,7 @@ export const ReactVisualEditor: React.FC<{
     updateBlocks,
     dragstart,
     dragend,
+    updateValue,
   });
   const buttons: {
     label: string | (() => string);
@@ -258,7 +262,25 @@ export const ReactVisualEditor: React.FC<{
         setPreview(!preview);
       },
     },
-    { label: "导入", icon: "icon-Import", handler: () => {} },
+    {
+      label: "导入",
+      icon: "icon-Import",
+      handler: async () => {
+        const text = await $$dialog.textarea("", {
+          title: "请输入导入的JSON字符串",
+        });
+        try {
+          const data = JSON.parse(text || "");
+          commander.updateValue(data);
+        } catch (e) {
+          console.log(e);
+          notification.open({
+            message: "导入失败",
+            description: "导入的数据格式不正常，请检查！",
+          });
+        }
+      },
+    },
     {
       label: "导出",
       icon: "icon-export",

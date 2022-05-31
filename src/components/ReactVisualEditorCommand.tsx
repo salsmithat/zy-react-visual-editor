@@ -11,6 +11,7 @@ export function useVisualCommand({
   focusData,
   value,
   updateBlocks,
+  updateValue,
   dragstart,
   dragend,
 }: {
@@ -19,6 +20,7 @@ export function useVisualCommand({
     unfocus: ReactVisualEditorBlock[];
   };
   value: ReactVisualEditorValue;
+  updateValue: (value: ReactVisualEditorValue) => void;
   updateBlocks: (blocks: ReactVisualEditorBlock[]) => void;
   dragstart: { on: (cb: () => void) => void; off: (cb: () => void) => void };
   dragend: { on: (cb: () => void) => void; off: (cb: () => void) => void };
@@ -174,6 +176,21 @@ export function useVisualCommand({
       };
     },
   });
+  commander.useRegistry({
+    name: "updateValue",
+    execute: (newVal: ReactVisualEditorValue) => {
+      const before = deepcopy(value);
+      const after = deepcopy(newVal);
+      return {
+        redo: () => {
+          updateValue(after);
+        },
+        undo: () => {
+          updateValue(before);
+        },
+      };
+    },
+  });
   commander.useInit();
   return {
     delete: () => {
@@ -193,6 +210,9 @@ export function useVisualCommand({
     },
     clear: () => {
       commander.state.commands.clear();
+    },
+    updateValue: (val: ReactVisualEditorValue) => {
+      commander.state.commands.updateValue(val);
     },
   };
 }
