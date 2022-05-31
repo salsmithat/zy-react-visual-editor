@@ -13,6 +13,7 @@ import { useCallbackRef } from "../hooks/useCallbackRef";
 import { useVisualCommand } from "./ReactVisualEditorCommand";
 import { createEvent } from "../plugins/event";
 import classNames from "classnames";
+import { $$dialog } from "../service/dialog/dialog";
 
 export const ReactVisualEditor: React.FC<{
   value: ReactVisualEditorValue;
@@ -258,7 +259,16 @@ export const ReactVisualEditor: React.FC<{
       },
     },
     { label: "导入", icon: "icon-Import", handler: () => {} },
-    { label: "导出", icon: "icon-export", handler: () => {} },
+    {
+      label: "导出",
+      icon: "icon-export",
+      handler: () => {
+        $$dialog.textarea(JSON.stringify(props.value), {
+          editReadonly: true,
+          title: "导出的JSON数据",
+        });
+      },
+    },
     {
       label: "置顶",
       icon: "icon-top",
