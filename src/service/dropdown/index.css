@@ -1,0 +1,24 @@
+.dropdown-service {
+  position: fixed;
+  background-color: white;
+  box-shadow: 0 1px 10px 2px rgba(0, 0, 0, 0.15);
+  padding: 12px 0;
+  transition: opacity 150ms linear;
+  z-index: 999;
+}
+.dropdown-item {
+  padding: 5px 12px;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 22px;
+  color: #314659;
+  background-color: #fff;
+  transition: background-color linear 0.2s;
+}
+.dropdown-item:hover {
+  background-color: #f2f2f2;
+  cursor: pointer;
+}
+.dropdown-item .iconfont {
+  margin-right: 4px;
+}

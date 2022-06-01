@@ -191,6 +191,25 @@ export function useVisualCommand({
       };
     },
   });
+  commander.useRegistry({
+    name: "updateBlock",
+    execute: (
+      newBlock: ReactVisualEditorBlock,
+      oldBlock: ReactVisualEditorBlock
+    ) => {
+      const before = deepcopy(value);
+      value.blocks.splice(value.blocks.indexOf(oldBlock), 1, newBlock);
+      const after = deepcopy(value);
+      return {
+        redo: () => {
+          updateValue(after);
+        },
+        undo: () => {
+          updateValue(before);
+        },
+      };
+    },
+  });
   commander.useInit();
   return {
     delete: () => {
@@ -213,6 +232,12 @@ export function useVisualCommand({
     },
     updateValue: (val: ReactVisualEditorValue) => {
       commander.state.commands.updateValue(val);
+    },
+    updateBlock: (
+      newBlock: ReactVisualEditorBlock,
+      oldBlock: ReactVisualEditorBlock
+    ) => {
+      commander.state.commands.updateBlock(newBlock, oldBlock);
     },
   };
 }

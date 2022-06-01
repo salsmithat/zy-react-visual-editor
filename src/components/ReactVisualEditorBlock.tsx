@@ -11,6 +11,7 @@ export const ReactVisualBlock: React.FC<{
   block: ReactVisualEditorBlock;
   config: ReactVisualEditorConfig;
   onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onContextMenu?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }> = (props) => {
   const { forceUpdate } = useUpdate();
   const styles = useMemo(() => {
@@ -58,6 +59,7 @@ export const ReactVisualBlock: React.FC<{
       ref={elRef}
       style={styles}
       onMouseDown={props.onMouseDown}
+      onContextMenu={props.onContextMenu}
     >
       {render}
     </div>

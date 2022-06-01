@@ -15,6 +15,7 @@ import { createEvent } from "../plugins/event";
 import classNames from "classnames";
 import { $$dialog } from "../service/dialog/dialog";
 import { notification } from "antd";
+import { $$dropdown, DropdownItem } from "../service/dropdown";
 
 export const ReactVisualEditor: React.FC<{
   value: ReactVisualEditorValue;
@@ -54,6 +55,27 @@ export const ReactVisualEditor: React.FC<{
       block.focus = false;
     });
     updateBlocks(props.value.blocks);
+  };
+  const showBlockData = (block: ReactVisualEditorBlock) => {
+    $$dialog.textarea(JSON.stringify(block), {
+      editReadonly: true,
+      title: "节点数据",
+    });
+  };
+  const importBlockData = async (block: ReactVisualEditorBlock) => {
+    const text = await $$dialog.textarea("", {
+      title: "请输入导入的节点JSON字符串",
+    });
+    try {
+      const data = JSON.parse(text || "");
+      commander.updateBlock(data, block);
+    } catch (e) {
+      console.log(e);
+      notification.open({
+        message: "导入失败",
+        description: "导入的数据格式不正常，请检查！",
+      });
+    }
   };
   const containerStyles = useMemo(() => {
     return {
@@ -147,6 +169,9 @@ export const ReactVisualEditor: React.FC<{
     if (preview) {
       return;
     }
+    if (e.button === 2) {
+      return;
+    }
     if (e.shiftKey) {
       if (focusData.focus.length <= 1) {
         block.focus = true;
@@ -233,6 +258,45 @@ export const ReactVisualEditor: React.FC<{
     dragend,
     updateValue,
   });
+  const handler = {
+    onContextmenuBlock: (
+      e: React.MouseEvent<HTMLDivElement>,
+      block: ReactVisualEditorBlock
+    ) => {
+      e.preventDefault();
+      e.stopPropagation();
+      $$dropdown({
+        reference: e.nativeEvent,
+        render: () => (
+          <>
+            <DropdownItem icon="icon-top" onClick={commander.placeTop}>
+              置顶节点
+            </DropdownItem>
+            <DropdownItem icon="icon-bottom" onClick={commander.placeBottom}>
+              置底节点
+            </DropdownItem>
+            <DropdownItem icon="icon-delete" onClick={commander.delete}>
+              删除节点
+            </DropdownItem>
+            <DropdownItem
+              icon="icon-export"
+              onClick={() => showBlockData(block)}
+            >
+              查看数据
+            </DropdownItem>
+            <DropdownItem
+              icon="icon-Import"
+              onClick={() => {
+                importBlockData(block);
+              }}
+            >
+              导入数据
+            </DropdownItem>
+          </>
+        ),
+      });
+    },
+  };
   const buttons: {
     label: string | (() => string);
     icon: string | (() => string);
@@ -376,6 +440,7 @@ export const ReactVisualEditor: React.FC<{
                 config={props.config}
                 key={index}
                 block={block}
+                onContextMenu={(e) => handler.onContextmenuBlock(e, block)}
               />
             );
           })}
