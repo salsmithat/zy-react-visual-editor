@@ -16,7 +16,11 @@ import classNames from "classnames";
 import { $$dialog } from "../service/dialog/dialog";
 import { notification } from "antd";
 import { $$dropdown, DropdownItem } from "../service/dropdown";
-import { ReactVisualBlockResize } from "./ReactVisualBlockResize";
+import {
+  ReactVisualBlockResize,
+  ReactVisualBlockResizeDirection,
+} from "./ReactVisualBlockResize";
+import deepcopy from "deepcopy";
 
 export const ReactVisualEditor: React.FC<{
   value: ReactVisualEditorValue;
@@ -341,6 +345,84 @@ export const ReactVisualEditor: React.FC<{
     innermousemove,
     innermouseup,
   };
+  const resizeData = useRef({
+    startX: 0,
+    startY: 0,
+    block: {} as ReactVisualEditorBlock,
+    direction: {
+      horizontal: ReactVisualBlockResizeDirection.start,
+      vertical: ReactVisualBlockResizeDirection.start,
+    },
+    startBlock: {
+      top: 0,
+      left: 0,
+      height: 0,
+      width: 0,
+    },
+    dragging: false,
+  });
+  const resizeMouseDown = (
+    e: React.MouseEvent<HTMLDivElement>,
+    direction: {
+      horizontal: ReactVisualBlockResizeDirection;
+      vertical: ReactVisualBlockResizeDirection;
+    },
+    block: ReactVisualEditorBlock
+  ) => {
+    e.stopPropagation();
+    document.addEventListener("mousemove", resizeMouseMove);
+    document.addEventListener("mouseup", resizeMouseUp);
+    resizeData.current = {
+      block,
+      startX: e.clientX,
+      startY: e.clientY,
+      direction,
+      startBlock: {
+        ...deepcopy(block),
+      },
+      dragging: false,
+    };
+  };
+  const resizeMouseMove = useCallbackRef((e: MouseEvent) => {
+    if (!resizeData.current.dragging) {
+      resizeData.current.dragging = true;
+      dragstart.emit();
+    }
+    let { clientX: moveX, clientY: moveY } = e;
+    const { startX, startY, startBlock, direction, block } = resizeData.current;
+
+    if (direction.horizontal === ReactVisualBlockResizeDirection.center) {
+      moveX = startX;
+    }
+    if (direction.vertical === ReactVisualBlockResizeDirection.center) {
+      moveY = startY;
+    }
+    let durX = moveX - startX;
+    let durY = moveY - startY;
+    if (direction.vertical === ReactVisualBlockResizeDirection.start) {
+      durY = -durY;
+      block.top = startBlock.top - durY;
+    }
+    if (direction.horizontal === ReactVisualBlockResizeDirection.start) {
+      durX = -durX;
+      block.left = startBlock.left - durX;
+    }
+    const width = startBlock.width + durX;
+    const height = startBlock.height + durY;
+    block.width = width;
+    block.height = height;
+    block.hasResize = true;
+    updateBlocks(props.value.blocks);
+  });
+  const resizeMouseUp = useCallbackRef((e: MouseEvent) => {
+    document.removeEventListener("mousemove", resizeMouseMove);
+    document.removeEventListener("mouseup", resizeMouseUp);
+    if (resizeData.current.dragging) {
+      setTimeout(() => {
+        dragend.emit();
+      });
+    }
+  });
   const commander = useVisualCommand({
     value: props.value,
     focusData,
@@ -541,6 +623,15 @@ export const ReactVisualEditor: React.FC<{
                     props.config.componentMap[block.componentKey].resize
                       ?.height) && (
                     <ReactVisualBlockResize
+                      onMouseDown={(
+                        e: React.MouseEvent<HTMLDivElement>,
+                        direction: {
+                          horizontal: ReactVisualBlockResizeDirection;
+                          vertical: ReactVisualBlockResizeDirection;
+                        }
+                      ) => {
+                        resizeMouseDown(e, direction, block);
+                      }}
                       component={props.config.componentMap[block.componentKey]}
                     />
                   )}

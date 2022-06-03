@@ -19,3 +19,8 @@
   right: -4px;
   border: dashed 1px #409eff;
 }
+.react-visual-editor:not(.react-visual-editor-preview)
+  .react-visual-editor-block
+  * {
+  transition: none;
+}
