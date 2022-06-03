@@ -50,6 +50,8 @@ export const ReactVisualBlock: React.FC<{
       props.block.adjustPosition = false;
       props.block.top = top - height / 2;
       props.block.left = left - width / 2;
+      props.block.width = elRef.current.offsetWidth;
+      props.block.height = elRef.current.offsetHeight;
       forceUpdate();
     }
   }, []);

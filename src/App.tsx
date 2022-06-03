@@ -4,42 +4,6 @@ import { visualConfig } from "./utils/visualConfig";
 import { ReactVisualEditorValue } from "./utils/ReactVisualEditor.utils";
 
 function App() {
-  // const [pos, setPos] = useState({
-  //   left: 0,
-  //   top: 0,
-  // });
-  // const posRef = useRef(pos);
-  // posRef.current = pos;
-  // const dragData = useRef({
-  //   startTop: 0,
-  //   startLeft: 0,
-  //   startX: 0,
-  //   startY: 0,
-  // });
-  // const mousedown = useCallbackRef((e: React.MouseEvent<HTMLDivElement>) => {
-  //   document.addEventListener("mousemove", mousemove);
-  //   document.addEventListener("mouseup", mouseup);
-  //   dragData.current = {
-  //     startTop: pos.top,
-  //     startLeft: pos.left,
-  //     startX: e.clientX,
-  //     startY: e.clientY,
-  //   };
-  // });
-  // const mousemove = useCallbackRef((e: MouseEvent) => {
-  //   const { startX, startY, startLeft, startTop } = dragData.current;
-  //   console.log(JSON.stringify(pos), JSON.stringify(posRef.current));
-  //   const durX = e.clientX - startX;
-  //   const durY = e.clientY - startY;
-  //   setPos({
-  //     top: startTop + durY,
-  //     left: startLeft + durX,
-  //   });
-  // });
-  // const mouseup = useCallbackRef((e: MouseEvent) => {
-  //   document.removeEventListener("mousemove", mousemove);
-  //   document.removeEventListener("mouseup", mouseup);
-  // });
   const [editorValue, setEditorValue] = useState(() => {
     const val: ReactVisualEditorValue = {
       container: {
@@ -54,6 +18,8 @@ function App() {
           adjustPosition: false,
           focus: false,
           zIndex: 0,
+          width: 56,
+          height: 22,
         },
         {
           componentKey: "button",
@@ -62,6 +28,8 @@ function App() {
           adjustPosition: false,
           focus: false,
           zIndex: 0,
+          width: 88,
+          height: 32,
         },
         {
           componentKey: "input",
@@ -70,6 +38,8 @@ function App() {
           adjustPosition: false,
           focus: false,
           zIndex: 0,
+          width: 187,
+          height: 32,
         },
       ],
     };

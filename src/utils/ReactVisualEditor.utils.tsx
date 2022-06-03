@@ -5,6 +5,8 @@ export interface ReactVisualEditorBlock {
   adjustPosition: boolean;
   focus: boolean;
   zIndex: number;
+  height: number;
+  width: number;
 }
 
 export interface ReactVisualEditorValue {
@@ -67,5 +69,7 @@ export function createVisualBlock({
     adjustPosition: true,
     focus: false,
     zIndex: 0,
+    width: 0,
+    height: 0,
   };
 }
