@@ -16,6 +16,7 @@ import classNames from "classnames";
 import { $$dialog } from "../service/dialog/dialog";
 import { notification } from "antd";
 import { $$dropdown, DropdownItem } from "../service/dropdown";
+import { ReactVisualBlockResize } from "./ReactVisualBlockResize";
 
 export const ReactVisualEditor: React.FC<{
   value: ReactVisualEditorValue;
@@ -531,7 +532,9 @@ export const ReactVisualEditor: React.FC<{
                 key={index}
                 block={block}
                 onContextMenu={(e) => handler.onContextmenuBlock(e, block)}
-              />
+              >
+                <ReactVisualBlockResize />
+              </ReactVisualBlock>
             );
           })}
           {mark.x !== null && (

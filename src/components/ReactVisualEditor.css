@@ -182,3 +182,58 @@
   top: 0;
   border-left: dashed 1px #409eff;
 }
+.react-visual-block-resize {
+  position: absolute;
+}
+.react-visual-block-resize-top-left,
+.react-visual-block-resize-top,
+.react-visual-block-resize-top-right,
+.react-visual-block-resize-left,
+.react-visual-block-resize-right,
+.react-visual-block-resize-bottom-left,
+.react-visual-block-resize-bottom,
+.react-visual-block-resize-bottom-right {
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  height: 6px;
+  width: 6px;
+  background-color: #409eff;
+}
+.react-visual-block-resize-top-left {
+  right: auto;
+  bottom: auto;
+}
+.react-visual-block-resize-top {
+  left: calc(50% - 3px);
+  right: auto;
+  bottom: auto;
+}
+.react-visual-block-resize-top-right {
+  left: auto;
+  bottom: auto;
+}
+.react-visual-block-resize-left {
+  top: calc(50% - 3px);
+  right: auto;
+  bottom: auto;
+}
+.react-visual-block-resize-right {
+  top: calc(50% - 3px);
+  left: auto;
+  bottom: auto;
+}
+.react-visual-block-resize-bottom-left {
+  right: auto;
+  top: auto;
+}
+.react-visual-block-resize-bottom {
+  left: calc(50% - 3px);
+  right: auto;
+  top: auto;
+}
+.react-visual-block-resize-bottom-right {
+  left: auto;
+  top: auto;
+}
