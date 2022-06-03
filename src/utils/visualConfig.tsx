@@ -10,10 +10,21 @@ visualConfig.registryComponent("text", {
 visualConfig.registryComponent("button", {
   name: "按钮",
   preview: () => <Button type="primary">预览按钮</Button>,
-  render: () => <Button type="primary">渲染按钮</Button>,
+  render: ({ size }) => (
+    <Button type="primary" style={size}>
+      渲染按钮
+    </Button>
+  ),
+  resize: {
+    width: true,
+    height: true,
+  },
 });
 visualConfig.registryComponent("input", {
   name: "输入框",
   preview: () => <Input />,
-  render: () => <Input />,
+  render: ({ size }) => <Input style={size} />,
+  resize: {
+    width: true,
+  },
 });

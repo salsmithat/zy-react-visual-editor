@@ -204,36 +204,44 @@
 .react-visual-block-resize-top-left {
   right: auto;
   bottom: auto;
+  cursor: nw-resize;
 }
 .react-visual-block-resize-top {
   left: calc(50% - 3px);
   right: auto;
   bottom: auto;
+  cursor: n-resize;
 }
 .react-visual-block-resize-top-right {
   left: auto;
   bottom: auto;
+  cursor: ne-resize;
 }
 .react-visual-block-resize-left {
   top: calc(50% - 3px);
   right: auto;
   bottom: auto;
+  cursor: w-resize;
 }
 .react-visual-block-resize-right {
   top: calc(50% - 3px);
   left: auto;
   bottom: auto;
+  cursor: e-resize;
 }
 .react-visual-block-resize-bottom-left {
   right: auto;
   top: auto;
+  cursor: sw-resize;
 }
 .react-visual-block-resize-bottom {
   left: calc(50% - 3px);
   right: auto;
   top: auto;
+  cursor: s-resize;
 }
 .react-visual-block-resize-bottom-right {
   left: auto;
   top: auto;
+  cursor: se-resize;
 }

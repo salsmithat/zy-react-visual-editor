@@ -7,6 +7,7 @@ export interface ReactVisualEditorBlock {
   zIndex: number;
   height: number;
   width: number;
+  hasResize?: boolean;
 }
 
 export interface ReactVisualEditorValue {
@@ -19,8 +20,12 @@ export interface ReactVisualEditorValue {
 export interface ReactVisualEditorComponent {
   key: string;
   preview: () => JSX.Element;
-  render: () => JSX.Element;
+  render: (data: { size: { height?: string; width?: string } }) => JSX.Element;
   name: string;
+  resize?: {
+    height?: boolean;
+    width?: boolean;
+  };
 }
 
 export function createVisualConfig() {
@@ -71,5 +76,6 @@ export function createVisualBlock({
     zIndex: 0,
     width: 0,
     height: 0,
+    hasResize: false,
   };
 }

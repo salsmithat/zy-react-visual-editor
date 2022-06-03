@@ -533,7 +533,17 @@ export const ReactVisualEditor: React.FC<{
                 block={block}
                 onContextMenu={(e) => handler.onContextmenuBlock(e, block)}
               >
-                <ReactVisualBlockResize />
+                {block.focus &&
+                  props.config.componentMap[block.componentKey] &&
+                  props.config.componentMap[block.componentKey].resize &&
+                  (props.config.componentMap[block.componentKey].resize
+                    ?.width ||
+                    props.config.componentMap[block.componentKey].resize
+                      ?.height) && (
+                    <ReactVisualBlockResize
+                      component={props.config.componentMap[block.componentKey]}
+                    />
+                  )}
               </ReactVisualBlock>
             );
           })}

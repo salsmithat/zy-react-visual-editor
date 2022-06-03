@@ -41,7 +41,22 @@ export const ReactVisualBlock: React.FC<{
   const component = props.config.componentMap[props.block.componentKey];
   let render: any;
   if (!!component) {
-    render = component.render();
+    render = component.render({
+      size:
+        props.block.hasResize && component.resize
+          ? (() => {
+              let styles = {
+                height: undefined as undefined | string,
+                width: undefined as undefined | string,
+              };
+              component.resize.width &&
+                (styles.width = `${props.block.width}px`);
+              component.resize.height &&
+                (styles.height = `${props.block.height}px`);
+              return styles;
+            })()
+          : {},
+    });
   }
   const elRef = useRef({} as HTMLDivElement);
   useEffect(() => {
