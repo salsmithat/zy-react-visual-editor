@@ -185,6 +185,14 @@
 .react-visual-block-resize {
   position: absolute;
 }
+.react-visual-block-resize::after {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: -5px;
+  right: -5px;
+  bottom: -5px;
+}
 .react-visual-block-resize-top-left,
 .react-visual-block-resize-top,
 .react-visual-block-resize-top-right,
