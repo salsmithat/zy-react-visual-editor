@@ -59,6 +59,8 @@
   width: 275px;
   background-color: white;
   border-left: 1px solid #dcdfe6;
+  padding: 20px;
+  box-sizing: border-box;
 }
 .react-visual-editor-body {
   top: 0;

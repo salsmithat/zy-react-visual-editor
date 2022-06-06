@@ -21,6 +21,7 @@ import {
   ReactVisualBlockResizeDirection,
 } from "./ReactVisualBlockResize";
 import deepcopy from "deepcopy";
+import { ReactVisualOperator } from "./ReactVisualEditorOperator";
 
 export const ReactVisualEditor: React.FC<{
   value: ReactVisualEditorValue;
@@ -28,12 +29,18 @@ export const ReactVisualEditor: React.FC<{
   config: ReactVisualEditorConfig;
 }> = (props) => {
   const [preview, setPreview] = useState(false);
+  const [selectIndex, setSelectIndex] = useState(-1);
   const [mark, setMark] = useState({
     x: null as null | number,
     y: null as null | number,
   });
   const [dragstart] = useState(() => createEvent());
   const [dragend] = useState(() => createEvent());
+  const selectBlock = useMemo(() => {
+    return props.value.blocks[selectIndex] as
+      | ReactVisualEditorBlock
+      | undefined;
+  }, [props.value.blocks, selectIndex]);
   const containerRef = useRef(null as HTMLDivElement | null);
 
   const bodyRef = useRef({} as HTMLDivElement);
@@ -174,7 +181,8 @@ export const ReactVisualEditor: React.FC<{
   };
   const mousedownBlock = (
     e: React.MouseEvent<HTMLDivElement>,
-    block: ReactVisualEditorBlock
+    block: ReactVisualEditorBlock,
+    index: number
   ) => {
     if (preview) {
       return;
@@ -195,6 +203,7 @@ export const ReactVisualEditor: React.FC<{
         clearFocus(block);
       }
     }
+    setSelectIndex(block.focus ? index : -1);
     setTimeout(() => {
       blockDragger.innermousedown(e, block);
     }, 0);
@@ -205,6 +214,7 @@ export const ReactVisualEditor: React.FC<{
     }
     if (!e.shiftKey) {
       clearFocus();
+      setSelectIndex(-1);
     }
   };
   const innerDragDate = useRef({
@@ -662,7 +672,14 @@ export const ReactVisualEditor: React.FC<{
           );
         })}
       </div>
-      <div className="react-visual-editor-operator">operator</div>
+      {
+        <ReactVisualOperator
+          updateBlock={commander.updateBlock}
+          updateValue={commander.updateValue}
+          selectBlock={selectBlock}
+          value={props.value}
+        />
+      }
       <div className="react-visual-editor-body" ref={bodyRef}>
         <div
           className="react-visual-editor-container"
@@ -673,7 +690,7 @@ export const ReactVisualEditor: React.FC<{
           {props.value.blocks.map((block, index) => {
             return (
               <ReactVisualBlock
-                onMouseDown={(e) => mousedownBlock(e, block)}
+                onMouseDown={(e) => mousedownBlock(e, block, index)}
                 config={props.config}
                 key={index}
                 block={block}
