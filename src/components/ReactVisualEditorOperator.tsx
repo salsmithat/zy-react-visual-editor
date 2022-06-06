@@ -1,10 +1,15 @@
-import { Button, Form, InputNumber } from "antd";
+import { Button, Form, InputNumber, Input, Select } from "antd";
 import deepcopy from "deepcopy";
 import React, { useEffect, useState } from "react";
 import {
   ReactVisualEditorBlock,
+  ReactVisualEditorConfig,
   ReactVisualEditorValue,
 } from "../utils/ReactVisualEditor.utils";
+import {
+  ReactVisualEditorProps,
+  VisualEditorPropsType,
+} from "./ReactVisualBlockProps";
 import "./ReactVisualEditorOperator.css";
 
 export const ReactVisualOperator: React.FC<{
@@ -15,6 +20,7 @@ export const ReactVisualOperator: React.FC<{
     newBlock: ReactVisualEditorBlock,
     oldBlock: ReactVisualEditorBlock
   ) => void;
+  config: ReactVisualEditorConfig;
 }> = (props) => {
   const [editData, setEditData] = useState({} as any);
   const [form] = Form.useForm();
@@ -24,6 +30,7 @@ export const ReactVisualOperator: React.FC<{
   const methods = {
     apply: () => {
       if (props.selectBlock) {
+        props.updateBlock(deepcopy(editData), props.selectBlock);
       } else {
         props.updateValue({ container: editData, blocks: props.value.blocks });
       }
@@ -64,7 +71,14 @@ export const ReactVisualOperator: React.FC<{
       )
     );
   } else {
-    render.push(<span key="title">编辑block属性</span>);
+    const component = props.config.componentMap[props.selectBlock.componentKey];
+    if (component) {
+      render.push(
+        ...Object.entries(component.props || {}).map(([propName, propConfig]) =>
+          renderEditor(propName, propConfig)
+        )
+      );
+    }
   }
   return (
     <div className="react-visual-editor-operator">
@@ -91,3 +105,38 @@ export const ReactVisualOperator: React.FC<{
     </div>
   );
 };
+
+function renderEditor(propsName: string, propsConfig: ReactVisualEditorProps) {
+  switch (propsConfig.type) {
+    case VisualEditorPropsType.text:
+      return (
+        <Form.Item
+          label={propsConfig.name}
+          name={["props", propsName]}
+          key={`props_${propsName}`}
+        >
+          <Input />
+        </Form.Item>
+      );
+    case VisualEditorPropsType.select:
+      return (
+        <Form.Item
+          label={propsConfig.name}
+          name={["props", propsName]}
+          key={`props_${propsName}`}
+        >
+          <Select options={propsConfig.options} />
+        </Form.Item>
+      );
+    case VisualEditorPropsType.color:
+      return (
+        <Form.Item
+          label={propsConfig.name}
+          name={["props", propsName]}
+          key={`props_${propsName}`}
+        >
+          <Input type={"color"} />
+        </Form.Item>
+      );
+  }
+}

@@ -1,3 +1,5 @@
+import { ReactVisualEditorProps } from "../components/ReactVisualBlockProps";
+
 export interface ReactVisualEditorBlock {
   top: number;
   left: number;
@@ -8,6 +10,7 @@ export interface ReactVisualEditorBlock {
   height: number;
   width: number;
   hasResize?: boolean;
+  props?: Record<string, any>;
 }
 
 export interface ReactVisualEditorValue {
@@ -20,12 +23,16 @@ export interface ReactVisualEditorValue {
 export interface ReactVisualEditorComponent {
   key: string;
   preview: () => JSX.Element;
-  render: (data: { size: { height?: string; width?: string } }) => JSX.Element;
+  render: (data: {
+    size: { height?: string; width?: string };
+    props: Record<string, any>;
+  }) => JSX.Element;
   name: string;
   resize?: {
     height?: boolean;
     width?: boolean;
   };
+  props?: { [key: string]: ReactVisualEditorProps };
 }
 
 export function createVisualConfig() {
@@ -35,9 +42,26 @@ export function createVisualConfig() {
    * 注册一个组件
    * @param key
    */
-  function registryComponent(
+  function registryComponent<
+    _,
+    Props extends { [key: string]: ReactVisualEditorProps } = {}
+  >(
     key: string,
-    option: Omit<ReactVisualEditorComponent, "key">
+    option: {
+      preview: () => JSX.Element;
+      render: (data: {
+        size: { height?: string; width?: string };
+        props: {
+          [k in keyof Props]: any;
+        };
+      }) => JSX.Element;
+      name: string;
+      resize?: {
+        height?: boolean;
+        width?: boolean;
+      };
+      props: Props;
+    }
   ) {
     if (componentMap[key]) {
       const index = componentArray.indexOf(componentMap[key]);
@@ -47,8 +71,8 @@ export function createVisualConfig() {
       key,
       ...option,
     };
-    componentArray.push(newComponent);
-    componentMap[key] = newComponent;
+    componentArray.push(newComponent as any);
+    componentMap[key] = newComponent as any;
   }
   return {
     componentMap,

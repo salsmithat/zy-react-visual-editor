@@ -56,6 +56,7 @@ export const ReactVisualBlock: React.FC<{
               return styles;
             })()
           : {},
+      props: props.block.props || {},
     });
   }
   const elRef = useRef({} as HTMLDivElement);

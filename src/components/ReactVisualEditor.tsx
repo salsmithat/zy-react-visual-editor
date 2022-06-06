@@ -674,6 +674,7 @@ export const ReactVisualEditor: React.FC<{
       </div>
       {
         <ReactVisualOperator
+          config={props.config}
           updateBlock={commander.updateBlock}
           updateValue={commander.updateValue}
           selectBlock={selectBlock}
