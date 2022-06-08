@@ -11,6 +11,7 @@ import {
   VisualEditorPropsType,
 } from "./ReactVisualBlockProps";
 import "./ReactVisualEditorOperator.css";
+import { TablePropsEditor } from "./TablePropsEditor";
 
 export const ReactVisualOperator: React.FC<{
   selectBlock?: ReactVisualEditorBlock;
@@ -136,6 +137,16 @@ function renderEditor(propsName: string, propsConfig: ReactVisualEditorProps) {
           key={`props_${propsName}`}
         >
           <Input type={"color"} />
+        </Form.Item>
+      );
+    case VisualEditorPropsType.table:
+      return (
+        <Form.Item
+          label={propsConfig.name}
+          name={["props", propsName]}
+          key={`props_${propsName}`}
+        >
+          <TablePropsEditor config={propsConfig} />
         </Form.Item>
       );
   }

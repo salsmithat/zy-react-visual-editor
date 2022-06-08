@@ -1,8 +1,9 @@
 import { createVisualConfig } from "./ReactVisualEditor.utils";
-import { Button, Input } from "antd";
+import { Button, Input, Select } from "antd";
 import {
   createColorProp,
   createSelectProp,
+  createTableProps,
   createTextProp,
 } from "../components/ReactVisualBlockProps";
 
@@ -62,4 +63,34 @@ visualConfig.registryComponent("input", {
     width: true,
   },
   props: {},
+});
+visualConfig.registryComponent("select", {
+  name: "下拉框",
+  preview: () => (
+    <Select value={"1"} options={[{ label: "请选择", value: "1" }]} />
+  ),
+  resize: { width: true },
+  render: ({ props, size }) => (
+    <Select style={{ width: size.width || "187px" }}>
+      {(props.options || []).map((item: any, index: number) => {
+        return (
+          <Select.Option value={item.field} key={index}>
+            {item.name}
+          </Select.Option>
+        );
+      })}
+      <Select.Option value="jack">Jack</Select.Option>
+      <Select.Option value="lucy">Lucy</Select.Option>
+      <Select.Option value="disabled" disabled>
+        Disabled
+      </Select.Option>
+    </Select>
+  ),
+  props: {
+    options: createTableProps("下拉选项", "label", [
+      { name: "选项显示值", field: "label" },
+      { name: "选项值", field: "val" },
+      { name: "备注", field: "comments" },
+    ]),
+  },
 });
